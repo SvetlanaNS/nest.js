@@ -7,33 +7,48 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
+import { ComentsService } from './coments/coments.service';
 import { News, NewsEdit, NewsService } from './news.service';
-
+import { renderNewsAll } from 'src/views/news/news-all';
+import { renderTemplate } from 'src/views/template';
 @Controller('news')
 export class NewsController {
-  constructor(private readonly newsService: NewsService) {}
+  constructor(
+    private readonly newsService: NewsService,
+    private readonly commentsService: ComentsService,
+  ) {}
 
-  @Get('/detail/:id')
+  @Get('/api/detail/:id')
   get(@Param('id') id: string): News {
     const idInt = parseInt(id);
-    return this.newsService.find(idInt);
+    const news = this.newsService.find(idInt);
+    const coments = this.commentsService.find(idInt);
+    return {
+      ...news,
+    };
   }
 
+  @Get('/api/all')
+  getAll(): News[] {...}
+    
+
   @Get('/all')
-  getAll(): News[] {
+  getAllViev() {
+
     const news = this.newsService.getAll();
-    return news;
+    const coutent= renderNewsAll(news);
+    return renderTemplate(coutent);
   }
-  @Post()
+  @Post('/api/detail/:idNews/:idComment')
   create(@Body() news: News): News {
     return this.newsService.create(news);
   }
-  @Put('/:id')
+  @Put('/api/:id')
   edit(@Param('id') id: string, @Body() news: NewsEdit): News {
     const idInt = parseInt(id);
     return this.newsService.edit(idInt, news);
   }
-  @Delete('/:id')
+  @Delete('/api/:id')
   remove(@Param('id') id: string): string {
     const idInt = parseInt(id);
     const isRemoved = this.newsService.remove(idInt);

@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-
+import { Coment } from './coments/coments.service';
 export interface News {
   id?: number;
   title: string;
   discription: string;
   autor: string;
   countView: number;
+  cover?: string;
 }
 
 export interface NewsEdit {
@@ -13,8 +14,9 @@ export interface NewsEdit {
   discription?: string;
   autor?: string;
   countView?: number;
+  cover='https://zamanilka.ru/wp-content/uploads/2022/02/kartinki-tank-190222-9.jpg',
 }
-function getRandomInt(min: number, max: number): number {
+export function getRandomInt(min = 1, max = 9999): number {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
